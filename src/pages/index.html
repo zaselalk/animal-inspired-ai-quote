@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+		<title>What Animal's Say</title>
 		<style>
 			body {
 				background-size: cover;
@@ -16,7 +16,7 @@
 				overflow: hidden;
 			}
 			.hidden {
-				display: none;
+				display: none !important;
 			}
 
 			h1 {
@@ -104,15 +104,17 @@
 			<div class="start-screen">
 				<div id="welcome-message">
 					<h1>Learn From Animal</h1>
+					<p>
+						Every animal has unique quality, This AI base application will give you new perspective on how animals think and act. The AI
+						will generate a quote about what animal's say.
+					</p>
+					<p>Some result can be inaccurate, but it's fun to see what AI can generate. To try it out, click the button below.</p>
 					<button class="btn trybtn" type="submit">Try Now</button>
 				</div>
 			</div>
 
 			<div class="content-wrapper hidden">
-				<div id="content">
-					🐞 "Patience and perseverance open the doors of opportunity. Just as an ant understands the power of the ant hill, so too can each
-					of us discover our own strength and potential." - A Leaves of Grass by Walt Whitman
-				</div>
+				<div id="content"></div>
 				<button class="btn try-another" type="submit">Try Again</button>
 			</div>
 		</div>
