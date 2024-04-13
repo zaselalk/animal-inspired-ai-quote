@@ -101,12 +101,30 @@
 					transform: rotate(360deg);
 				}
 			}
+
+			/* increase content wrapper width on smaller device */
+			@media (max-width: 768px) {
+				.content-wrapper {
+					width: 80%;
+				}
+				.start-screen {
+					padding: 20px;
+				}
+
+				.welcome-message {
+					font-size: 1rem;
+					text-align: center;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+				}
+			}
 		</style>
 	</head>
 	<body>
 		<div class="container">
 			<div class="start-screen">
-				<div id="welcome-message">
+				<div class="welcome-message">
 					<h1>Learn From Animal</h1>
 					<p>
 						Every animal has unique quality, This AI base application will give you new perspective on how animals think and act. The AI
