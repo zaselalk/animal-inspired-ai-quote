@@ -82,11 +82,7 @@ binding = "AI"
 # [[queues.consumers]]
 # queue = "my-queue"
 
-# Bind an R2 Bucket. Use R2 to store arbitrarily large blobs of data, such as files.
-# Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#r2-buckets
-[[r2_buckets]]
- binding = "MY_BUCKET"
- bucket_name = "ai-images"
+
 
 # Bind another Worker service. Use this binding to call another Worker without network overhead.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
