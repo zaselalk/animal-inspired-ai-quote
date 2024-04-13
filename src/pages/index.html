@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			body {
+				background-size: cover;
+				background-repeat: no-repeat;
+				background-position: center;
+				min-height: 100vh;
+				background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+					url('https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=1459&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+			}
+
+			h1 {
+				color: aliceblue;
+				font-family: Verdana, Geneva, Tahoma, sans-serif;
+			}
+
+			.container {
+				color: aliceblue;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				height: 100vh;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Learn From Animal</h1>
+
+			<button id="trybtn" type="submit">Try Now</button>
+
+			<div id="content"></div>
+		</div>
+		<script>
+			const trybtn = document.querySelector('#trybtn');
+			trybtn.addEventListener('click', async (e) => {
+				const response = await fetch('/quote', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+				const data = await response.json();
+				console.log(data.draft.response);
+				// get image
+				const image = document.querySelector('#image');
+
+				const imageres = await fetch('/image', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ prompt: data.draft.response }),
+				});
+
+				// convert image to base64
+				const imageBlob = await imageres.blob();
+				const reader = new FileReader();
+				reader.readAsDataURL(imageBlob);
+				reader.onloadend = function () {
+					const base64data = reader.result;
+					// image.src = base64data;
+					document.body.style.backgroundImage = `url(${base64data})`;
+
+					// add a gradient overlay
+					document.body.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${base64data})`;
+				};
+
+				const content = document.querySelector('#content');
+				content.innerHTML = data.draft.response;
+			});
+		</script>
+	</body>
+</html>

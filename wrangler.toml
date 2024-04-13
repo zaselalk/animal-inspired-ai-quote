@@ -12,8 +12,10 @@ compatibility_flags = ["nodejs_compat"]
 
 # Bind the Workers AI model catalog. Run machine learning models, powered by serverless GPUs, on Cloudflare’s global network
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#workers-ai
-# [ai]
-# binding = "AI"
+[ai]
+binding = "AI"
+
+
 
 # Bind an Analytics Engine dataset. Use Analytics Engine to write analytics within your Pages Function.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#analytics-engine-datasets
@@ -82,9 +84,9 @@ compatibility_flags = ["nodejs_compat"]
 
 # Bind an R2 Bucket. Use R2 to store arbitrarily large blobs of data, such as files.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#r2-buckets
-# [[r2_buckets]]
-# binding = "MY_BUCKET"
-# bucket_name = "my-bucket"
+[[r2_buckets]]
+ binding = "MY_BUCKET"
+ bucket_name = "ai-images"
 
 # Bind another Worker service. Use this binding to call another Worker without network overhead.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings

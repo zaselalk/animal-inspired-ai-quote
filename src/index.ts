@@ -1,32 +1,62 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+import { Hono } from 'hono';
+import { Ai } from '@cloudflare/ai';
+import html from './pages/index.html';
 
 export interface Env {
-	// Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
-	// MY_KV_NAMESPACE: KVNamespace;
-	//
-	// Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
-	// MY_DURABLE_OBJECT: DurableObjectNamespace;
-	//
-	// Example binding to R2. Learn more at https://developers.cloudflare.com/workers/runtime-apis/r2/
-	// MY_BUCKET: R2Bucket;
-	//
-	// Example binding to a Service. Learn more at https://developers.cloudflare.com/workers/runtime-apis/service-bindings/
-	// MY_SERVICE: Fetcher;
-	//
-	// Example binding to a Queue. Learn more at https://developers.cloudflare.com/queues/javascript-apis/
-	// MY_QUEUE: Queue;
+	AI: any;
+	MY_BUCKET: any;
 }
 
-export default {
-	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		return new Response('Hello World!');
-	},
-};
+const app = new Hono<{ Bindings: Env }>();
+
+app.get('/', async (c) => {
+	return c.html(html);
+});
+
+app.post('/quote', async (c) => {
+	const ai = new Ai(c.env.AI);
+
+	const messages = [
+		{
+			role: 'user',
+			content: `Select a random animal and write a motivational quote about that animal. Limit the quote to 50 words`,
+		},
+
+		// content: `Select a random animal and write a motivational quote about that animal. Limit the quote to 50 words,
+		// 	Start with I am a/an [animal] and end with a positive message. For example, I am a lion and I am strong and brave.`,
+		// },
+	];
+
+	const response = await ai.run('@cf/openchat/openchat-3.5-0106', { messages });
+	console.log(response);
+
+	// const image = await ai.run('@cf/lykon/dreamshaper-8-lcm', { prompt: response.response });
+	// console.log(image);
+
+	// // upload to bucket
+	// // const bucket = c.env.MY_BUCKET;
+	// // const fileName = `${title}.png`;
+
+	// // await bucket.put(fileName, image);
+	// // console.log(imageURL);
+
+	return c.json({ draft: response });
+});
+
+app.post('/image', async (c) => {
+	const ai = new Ai(c.env.AI);
+	const { prompt } = await c.req.json();
+
+	if (!prompt) {
+		return c.json({ error: 'Prompt is required' });
+	}
+
+	const image = await ai.run('@cf/lykon/dreamshaper-8-lcm', { prompt });
+	console.log(image);
+
+	c.status(200);
+	c.header('Content-Type', 'image/png'); // means binary data
+	return c.body(image);
+});
+
+export default app;
