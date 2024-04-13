@@ -11,8 +11,12 @@
 				background-repeat: no-repeat;
 				background-position: center;
 				min-height: 100vh;
-				background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+				background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
 					url('https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=1459&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+				overflow: hidden;
+			}
+			.hidden {
+				display: none;
 			}
 
 			h1 {
@@ -28,27 +32,118 @@
 				justify-content: center;
 				height: 100vh;
 			}
+
+			.start-screen {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				background-color: rgba(0, 0, 0, 0.8);
+				padding: 100px;
+				border-radius: 10px;
+			}
+			.btn {
+				padding: 10px 20px;
+				background-color: #4caf50;
+				color: aliceblue;
+				border: none;
+				border-radius: 5px;
+				cursor: pointer;
+			}
+
+			.btn:hover {
+				background-color: #0c5510;
+			}
+
+			.btn:disabled {
+				background-color: #2bb12b;
+				cursor: not-allowed;
+			}
+
+			.content-wrapper {
+				background-color: rgba(0, 0, 0, 0.9);
+				padding: 2rem;
+				border-radius: 10px;
+				margin: 20px;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				font-size: x-large;
+				font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+				width: 50%;
+			}
+
+			.content-wrapper button {
+				margin-top: 20px;
+			}
+
+			.loader {
+				width: 48px;
+				height: 48px;
+				border: 5px solid #fff;
+				border-bottom-color: #ff3d00;
+				border-radius: 50%;
+				display: inline-block;
+				box-sizing: border-box;
+				animation: rotation 1s linear infinite;
+			}
+
+			@keyframes rotation {
+				0% {
+					transform: rotate(0deg);
+				}
+				100% {
+					transform: rotate(360deg);
+				}
+			}
 		</style>
 	</head>
 	<body>
 		<div class="container">
-			<h1>Learn From Animal</h1>
+			<div class="start-screen">
+				<div id="welcome-message">
+					<h1>Learn From Animal</h1>
+					<button class="btn trybtn" type="submit">Try Now</button>
+				</div>
+			</div>
 
-			<button id="trybtn" type="submit">Try Now</button>
-
-			<div id="content"></div>
+			<div class="content-wrapper hidden">
+				<div id="content">
+					🐞 "Patience and perseverance open the doors of opportunity. Just as an ant understands the power of the ant hill, so too can each
+					of us discover our own strength and potential." - A Leaves of Grass by Walt Whitman
+				</div>
+				<button class="btn try-another" type="submit">Try Again</button>
+			</div>
 		</div>
 		<script>
-			const trybtn = document.querySelector('#trybtn');
-			trybtn.addEventListener('click', async (e) => {
+			const trybtn = document.querySelector('.trybtn');
+			const startScreen = document.querySelector('.start-screen');
+			const loading = document.querySelector('.loading-message');
+			const welcomeMessage = document.querySelector('#welcome-message');
+			const contentWrapper = document.querySelector('.content-wrapper');
+			const tryAgain = document.querySelector('.try-another');
+
+			trybtn.addEventListener('click', showQuote);
+			tryAgain.addEventListener('click', showQuote);
+
+			async function showQuote(event) {
+				event.target.innerHTML = 'Generating Quote...';
+
+				// disable button
+				event.target.disabled = true;
+
 				const response = await fetch('/quote', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
 				});
+
 				const data = await response.json();
-				console.log(data.draft.response);
+
+				// update button text
+
 				// get image
 				const image = document.querySelector('#image');
 
@@ -59,6 +154,8 @@
 					},
 					body: JSON.stringify({ prompt: data.draft.response }),
 				});
+
+				event.target.innerHTML = 'Almost there...';
 
 				// convert image to base64
 				const imageBlob = await imageres.blob();
@@ -75,7 +172,13 @@
 
 				const content = document.querySelector('#content');
 				content.innerHTML = data.draft.response;
-			});
+				content.classList.remove('hidden');
+				startScreen.style.display = 'none';
+				contentWrapper.classList.remove('hidden');
+
+				event.target.innerHTML = 'Try Again';
+				event.target.disabled = false;
+			}
 		</script>
 	</body>
 </html>

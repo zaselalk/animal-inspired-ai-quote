@@ -19,26 +19,14 @@ app.post('/quote', async (c) => {
 	const messages = [
 		{
 			role: 'user',
+			// content: `Select a random animal and write a motivational quote about that animal. Limit the quote to 50 words,
+			// 	Start with I am a/an [animal] and end with a positive message. For example, I am a lion and I am strong and brave.`,
+
 			content: `Select a random animal and write a motivational quote about that animal. Limit the quote to 50 words`,
 		},
-
-		// content: `Select a random animal and write a motivational quote about that animal. Limit the quote to 50 words,
-		// 	Start with I am a/an [animal] and end with a positive message. For example, I am a lion and I am strong and brave.`,
-		// },
 	];
 
 	const response = await ai.run('@cf/openchat/openchat-3.5-0106', { messages });
-	console.log(response);
-
-	// const image = await ai.run('@cf/lykon/dreamshaper-8-lcm', { prompt: response.response });
-	// console.log(image);
-
-	// // upload to bucket
-	// // const bucket = c.env.MY_BUCKET;
-	// // const fileName = `${title}.png`;
-
-	// // await bucket.put(fileName, image);
-	// // console.log(imageURL);
 
 	return c.json({ draft: response });
 });
