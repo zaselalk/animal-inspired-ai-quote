@@ -17,6 +17,6 @@
   },
   "dependencies": {
     "@cloudflare/ai": "^1.1.0",
-    "hono": "^4.12.7"
+    "hono": "^4.12.12"
   }
 }
